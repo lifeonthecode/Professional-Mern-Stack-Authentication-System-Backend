@@ -60,7 +60,7 @@ const userLogin = async (req, res) => {
         res.cookie('accessToken', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: "none",
             maxAge: 24 * 60 * 60 * 1000,
         });
 
@@ -74,11 +74,10 @@ const userLogin = async (req, res) => {
 
 const userLogout = async (req, res) => {
     try {
-        console.log('logout called')
         res.clearCookie('accessToken', {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: "none"
         });
 
         return res.status(200).json({
@@ -91,7 +90,7 @@ const userLogout = async (req, res) => {
 }
 
 
-const me = async(req, res) => {
+const me = async (req, res) => {
     try {
         const user = await User.findById(req.user.userId).select('-password');
         return res.status(200).json({
@@ -106,15 +105,15 @@ const me = async(req, res) => {
 
 
 
-const forgetPassword = async(req, res) => {
+const forgetPassword = async (req, res) => {
     try {
-        const {email} = req.body;
-        if(!email) {
+        const { email } = req.body;
+        if (!email) {
             return errorResponse(res, 404, "Email required!")
         };
 
-        const user = await User.findOne({email});
-        if(!user) {
+        const user = await User.findOne({ email });
+        if (!user) {
             return errorResponse(res, 404, 'User not found')
         }
 
@@ -125,9 +124,8 @@ const forgetPassword = async(req, res) => {
         user.resetPasswordToken = hashToken;
         user.resetPasswordExpire = Date.now() + 60 * 60 * 1000 // 1hour
         await user.save();
-        
-        const resetUrl = `https://professional-mern-stack-authenticat.vercel.app/reset-password/${resetToken}`;
 
+        const resetUrl = `https://professional-mern-stack-authenticat.vercel.app/reset-password/${resetToken}`;
         const mailOptions = {
             email: user.email,
             message: 'Reset Your Password',
@@ -137,7 +135,7 @@ const forgetPassword = async(req, res) => {
 
         return successResponse(res, 200, 'Password reset link sent to your email!');
 
-        
+
     } catch (error) {
         return errorResponse(res, 500, error.message)
     }
@@ -146,10 +144,10 @@ const forgetPassword = async(req, res) => {
 
 
 const resetPassword = async (req, res) => {
-     try {
-        const {token} = req.params;
-        const {password} = req.body;
-        if(!token || !password) {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+        if (!token || !password) {
             return errorResponse(res, 404, "Token & Password required!")
         };
 
@@ -158,9 +156,9 @@ const resetPassword = async (req, res) => {
 
         const user = await User.findOne({
             resetPasswordToken: hashedToken,
-            resetPasswordExpire: {$gt: Date.now()}
+            resetPasswordExpire: { $gt: Date.now() }
         });
-        if(!user) {
+        if (!user) {
             return errorResponse(res, 404, 'Token invalid or expired!')
         }
 
@@ -173,7 +171,7 @@ const resetPassword = async (req, res) => {
 
         return successResponse(res, 200, 'Password reset successfully');
 
-        
+
     } catch (error) {
         return errorResponse(res, 500, error.message)
     }
