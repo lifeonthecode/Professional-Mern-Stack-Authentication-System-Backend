@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+
+# Environment variables
+.env
+
+# Log files
+*.log
+logs/
+
+# Build artifacts
+dist/
+build/
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Other common ignores
+*.tmp
+*.bak
